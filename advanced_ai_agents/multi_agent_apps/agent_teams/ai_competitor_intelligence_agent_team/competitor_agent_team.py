@@ -69,8 +69,8 @@ if "openai_api_key" in st.session_state and "firecrawl_api_key" in st.session_st
         
         firecrawl_tools = FirecrawlTools(
             api_key=st.session_state.firecrawl_api_key,
-            scrape=False,
-            crawl=True,
+            enable_scrape=False,
+            enable_crawl=True,
             limit=5
         )
 
@@ -341,73 +341,3 @@ if "openai_api_key" in st.session_state and "firecrawl_api_key" in st.session_st
                     st.write("- Invalid URLs (try with a different company description)")
             else:
                 st.error("Please provide either a URL or a description.")
-
-# ================================
-
-# API SERVICE WRAPPER (ADD BOTTOM)
-
-# ================================
-
-def run_competitor_analysis(
-company_url: str = None,
-description: str = None,
-search_engine_choice: str = "Exa AI",
-openai_api_key: str = "",
-firecrawl_api_key: str = "",
-exa_api_key: str = "",
-perplexity_api_key: str = "",
-):
-"""
-Clean callable function for FastAPI.
-This bypasses Streamlit UI.
-"""
-
-```
-if not company_url and not description:
-    return {"error": "Provide company_url or description"}
-
-try:
-    import streamlit as st
-
-    # ---- inject keys into session ----
-    st.session_state.openai_api_key = openai_api_key
-    st.session_state.firecrawl_api_key = firecrawl_api_key
-
-    global search_engine
-    search_engine = search_engine_choice
-
-    if search_engine_choice == "Exa AI":
-        st.session_state.exa_api_key = exa_api_key
-    else:
-        st.session_state.perplexity_api_key = perplexity_api_key
-
-    # ---- get competitors ----
-    competitor_urls = get_competitor_urls(
-        url=company_url,
-        description=description,
-    )
-
-    if not competitor_urls:
-        return {"error": "No competitors found"}
-
-    competitor_data = []
-
-    for comp_url in competitor_urls[:3]:
-        info = extract_competitor_info(comp_url)
-        if info:
-            competitor_data.append(info)
-
-    if not competitor_data:
-        return {"error": "Failed to extract competitor data"}
-
-    analysis_report = generate_analysis_report(competitor_data)
-
-    return {
-        "competitors_found": competitor_urls,
-        "competitor_data": competitor_data,
-        "analysis_report": analysis_report,
-    }
-
-except Exception as e:
-    return {"error": str(e)}
-```
