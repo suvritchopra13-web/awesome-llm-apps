@@ -1,0 +1,12 @@
+# AI Competitor Intel Project Gitignore
+.env
+.env.local
+__pycache__/
+*.pyc
+node_modules/
+.next/
+out/
+build/
+dist/
+.DS_Store
+*.log
